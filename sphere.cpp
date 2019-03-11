@@ -20,6 +20,7 @@ bool sphere::hit(const ray &r, float t_min, float t_max, hit_record &rec) const 
             rec.p = r.point_at_parameter(rec.t);
             vec3 p_c = rec.p - center;
             rec.normal = p_c / radius;
+            rec.mat_ptr = mat_ptr;
             return true;
 
         }
@@ -30,6 +31,7 @@ bool sphere::hit(const ray &r, float t_min, float t_max, hit_record &rec) const 
             rec.p = r.point_at_parameter(rec.t);
             vec3 p_c = rec.p - center;
             rec.normal = p_c / radius;
+            rec.mat_ptr = mat_ptr;
             return true;
         }
 
