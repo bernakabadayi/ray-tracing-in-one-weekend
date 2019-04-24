@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "lambertian.h"
 #include "metal.h"
+#include "dielectric.h"
 
 
 using namespace std;
@@ -19,17 +20,18 @@ vec3 random_in_unit_sphere();
 int main() {
 
     clock_t start = clock();
-    int nx = 200;
-    int ny = 100;
+    int nx = 800;
+    int ny = 400;
     int ns = 100;
     ofstream out("output.ppm");
     out << "P3" << endl << nx << " " << ny << endl << "255" << endl;
 
     hitable* list[4];
     list[0] = new sphere(vec3(0,0,-1),0.5, new lambertian(vec3(0.8,0.3,0.3))); // middle
-    list[1] = new sphere(vec3(0,-100.5,-1),100, new lambertian(vec3(0.8,0.8,0.8)));
-    list[2] = new sphere(vec3(1,0,-1),0.5, new metal(vec3(0.8,0.6,0.2), 1));
-    list[3] = new sphere(vec3(-1,0,-1),0.5, new metal(vec3(0.8,0.8,0.8), 0)); // left
+    list[1] = new sphere(vec3(0,-100.5,-1),100, new lambertian(vec3(0.8,0.8,0.8))); //ground
+    list[2] = new sphere(vec3(1,0,-1),0.5, new metal(vec3(0.8,0.6,0.2), 0.1)); //right
+    list[3] = new sphere(vec3(-1,0,-1),0.5, new dielectric(1.5)); // left
+   // list[3] = new sphere(vec3(-1,0,-1),-0.5, new dielectric(1.5)); // left
 
     hitable* world = new hitablelist(list,4);
     camera cam;

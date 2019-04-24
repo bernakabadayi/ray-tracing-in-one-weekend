@@ -7,7 +7,7 @@
 
 
 #include "material.h"
-
+// diffuse(matte) material
 class lambertian : public material {
     public:
         lambertian(const vec3& a) : albedo(a) {}
