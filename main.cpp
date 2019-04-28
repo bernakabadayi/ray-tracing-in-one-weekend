@@ -26,15 +26,16 @@ int main() {
     ofstream out("output.ppm");
     out << "P3" << endl << nx << " " << ny << endl << "255" << endl;
 
+    float R = cos(M_PI/4);
     hitable* list[4];
     list[0] = new sphere(vec3(0,0,-1),0.5, new lambertian(vec3(0.8,0.3,0.3))); // middle
     list[1] = new sphere(vec3(0,-100.5,-1),100, new lambertian(vec3(0.8,0.8,0.8))); //ground
     list[2] = new sphere(vec3(1,0,-1),0.5, new metal(vec3(0.8,0.6,0.2), 0.1)); //right
     list[3] = new sphere(vec3(-1,0,-1),0.5, new dielectric(1.5)); // left
-   // list[3] = new sphere(vec3(-1,0,-1),-0.5, new dielectric(1.5)); // left
 
     hitable* world = new hitablelist(list,4);
-    camera cam;
+    vec3 dir = unit_vector(vec3(0,0,-1) - vec3(-2,2,1));
+    camera cam(vec3(-2,2,1) + dir*2,vec3(0,0,-1),vec3(0,1,0),90, float(nx)/float(ny));
 
     for(int j = ny -1; j>= 0; j--)
     {
