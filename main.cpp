@@ -10,6 +10,7 @@
 #include "lambertian.h"
 #include "metal.h"
 #include "dielectric.h"
+#include <omp.h>
 
 
 using namespace std;
@@ -21,18 +22,18 @@ hitable *random_scene();
 int main() {
 
     clock_t start = clock();
-    int nx = 200;
-    int ny = 100;
+    int nx = 800;
+    int ny = 400;
     int ns = 100;
     ofstream out("output.ppm");
     out << "P3" << endl << nx << " " << ny << endl << "255" << endl;
 
     float R = cos(M_PI/4);
     hitable* list[4];
-    list[0] = new sphere(vec3(0,0,-1),0.5, new lambertian(vec3(0.8,0.3,0.3))); // middle
-    list[1] = new sphere(vec3(0,-100.5,-1),100, new lambertian(vec3(0.8,0.8,0.8))); //ground
-    list[2] = new sphere(vec3(1,0,-1),0.5, new metal(vec3(0.8,0.6,0.2), 0.1)); //right
-    list[3] = new sphere(vec3(-1,0,-1),0.5, new dielectric(1.5)); // left
+   // list[0] = new sphere(vec3(0,0,-1),0.5, new lambertian(vec3(0.8,0.3,0.3))); // middle
+   // list[1] = new sphere(vec3(0,-100.5,-1),100, new lambertian(vec3(0.8,0.8,0.8))); //ground
+   // list[2] = new sphere(vec3(1,0,-1),0.5, new metal(vec3(0.8,0.6,0.2), 0.1)); //right
+   // list[3] = new sphere(vec3(-1,0,-1),0.5, new dielectric(1.5)); // left
 
     hitable* world = new hitablelist(list,4);
     world = random_scene();
@@ -44,7 +45,8 @@ int main() {
 
 
     camera cam(lookfrom,lookat,vec3(0,1,0),20, float(nx)/float(ny), aperture, dist_to_focus);
-
+    // ohne = 11sn
+    #pragma omp parallel for collapse(2)
     for(int j = ny -1; j>= 0; j--)
     {
         for(int i = 0; i < nx; i++)
@@ -69,6 +71,8 @@ int main() {
 
             out << ir << " " << ig << " " << ib << endl;
         }
+
+        cout << j << endl;
     }
     printf("Time taken: %.2fs\n", (double)(clock() - start)/CLOCKS_PER_SEC);
     return 0;
